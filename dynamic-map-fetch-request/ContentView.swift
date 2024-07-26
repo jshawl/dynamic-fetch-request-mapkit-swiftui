@@ -9,17 +9,23 @@ import SwiftUI
 import CoreData
 import MapKit
 
+struct PolylineView: MapContent {
+    var body: some MapContent {
+        MapPolyline(coordinates: [
+            // Montreal
+            CLLocationCoordinate2D(latitude: 45.5019, longitude: -73.5674),
+            // Austin
+            CLLocationCoordinate2D(latitude: 30.2672, longitude: -97.7431),
+            // Seattle
+            CLLocationCoordinate2D(latitude: 47.6061, longitude: -122.3328),
+        ]).stroke(.blue, lineWidth: 2.0)
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         Map(){
-            MapPolyline(coordinates: [
-                // Montreal
-                CLLocationCoordinate2D(latitude: 45.5019, longitude: -73.5674),
-                // Austin
-                CLLocationCoordinate2D(latitude: 30.2672, longitude: -97.7431),
-                // Seattle
-                CLLocationCoordinate2D(latitude: 47.6061, longitude: -122.3328),
-            ]).stroke(.blue, lineWidth: 2.0)
+            PolylineView()
         }.onMapCameraChange(frequency: .continuous) { context in
             print(bounds(region: context.region))
         }
