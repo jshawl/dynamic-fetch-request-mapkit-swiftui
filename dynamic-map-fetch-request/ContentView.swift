@@ -11,7 +11,16 @@ import MapKit
 
 struct ContentView: View {
     var body: some View {
-        Map().onMapCameraChange(frequency: .continuous) { context in
+        Map(){
+            MapPolyline(coordinates: [
+                // Montreal
+                CLLocationCoordinate2D(latitude: 45.5019, longitude: -73.5674),
+                // Austin
+                CLLocationCoordinate2D(latitude: 30.2672, longitude: -97.7431),
+                // Seattle
+                CLLocationCoordinate2D(latitude: 47.6061, longitude: -122.3328),
+            ]).stroke(.blue, lineWidth: 2.0)
+        }.onMapCameraChange(frequency: .continuous) { context in
             print(bounds(region: context.region))
         }
     }
