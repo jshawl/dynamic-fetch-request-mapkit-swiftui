@@ -12,8 +12,29 @@ import MapKit
 struct PolylineView: MapContent {
     @FetchRequest var fetchRequest: FetchedResults<Item>
 
-    init(){
-        _fetchRequest = FetchRequest<Item>(sortDescriptors: [])
+    init(region: MKCoordinateRegion?){
+        if region != nil {
+            let regionBounds = bounds(region: region!)
+            _fetchRequest = FetchRequest<Item>(
+                sortDescriptors: [],
+                predicate: NSPredicate(
+                    format: "latitude > %f AND latitude < %f AND longitude > %f AND longitude < %f",
+                    regionBounds.minLatitude,
+                    regionBounds.maxLatitude,
+                    regionBounds.minLongitude,
+                    regionBounds.maxLongitude
+                )
+            )
+        } else {
+            // fetch nothing
+            _fetchRequest = FetchRequest<Item>(
+                sortDescriptors: [],
+                predicate: NSPredicate(
+                    format: "latitude = %f",
+                    -200.0
+                )
+            )
+        }
     }
 
     var body: some MapContent {
@@ -25,11 +46,12 @@ struct PolylineView: MapContent {
 }
 
 struct ContentView: View {
+    @State var region: MKCoordinateRegion?;
     var body: some View {
         Map(){
-            PolylineView()
+            PolylineView(region: region)
         }.onMapCameraChange(frequency: .continuous) { context in
-            print(bounds(region: context.region))
+            region = context.region
         }
     }
 }
