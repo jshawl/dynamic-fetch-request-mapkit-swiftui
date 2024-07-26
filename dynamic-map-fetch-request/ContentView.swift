@@ -10,15 +10,17 @@ import CoreData
 import MapKit
 
 struct PolylineView: MapContent {
+    @FetchRequest var fetchRequest: FetchedResults<Item>
+
+    init(){
+        _fetchRequest = FetchRequest<Item>(sortDescriptors: [])
+    }
+
     var body: some MapContent {
-        MapPolyline(coordinates: [
-            // Montreal
-            CLLocationCoordinate2D(latitude: 45.5019, longitude: -73.5674),
-            // Austin
-            CLLocationCoordinate2D(latitude: 30.2672, longitude: -97.7431),
-            // Seattle
-            CLLocationCoordinate2D(latitude: 47.6061, longitude: -122.3328),
-        ]).stroke(.blue, lineWidth: 2.0)
+        let coordinates = fetchRequest.map { item in
+                    CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude)
+        }
+        MapPolyline(coordinates: coordinates).stroke(.blue, lineWidth: 2.0)
     }
 }
 
